@@ -9,11 +9,18 @@ cap = cv2.VideoCapture(0)
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
-# search boundaries
-top_bounds = 150
-bot_bounds = 800
-left_bounds = 200
-right_bounds = 1600
+# # search boundaries
+centerX = 320
+centerY = 240
+bounds = 30
+# top_bounds = 150
+# bot_bounds = 800
+# left_bounds = 200
+# right_bounds = 1600
+
+# Rescale camera
+cap.set(3, 640)
+cap.set(4,480)
 
 # Main loop running tracking
 while(True):
@@ -39,18 +46,20 @@ while(True):
 
 		# print landmark face points
 		landmarks = predictor(gray, face)
-		for n in range(27, 47):
+		for n in range(27, 48):
 			x = landmarks.part(n).x
 			y = landmarks.part(n).y
 			cv2.circle(frame, (x, y), 4, (255, 0, 0), -1)
 
-		if landmarks.part(27).y < top_bounds:
+		# print(landmarks.part(30))
+
+		if landmarks.part(30).y < centerY - bounds:
 			print("MOVE UP")
-		if landmarks.part(33).y > bot_bounds:
+		if landmarks.part(30).y > centerY + bounds:
 			print("MOVE DOWN")
-		if landmarks.part(36).x < left_bounds:
+		if landmarks.part(30).x < centerX - bounds:
 			print("MOVE LEFT")
-		if landmarks.part(45).x > right_bounds:
+		if landmarks.part(30).x > centerX + bounds:
 			print("MOVE RIGHT")
 
 
